@@ -3,6 +3,7 @@ package com.sp.fc.web;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -54,6 +55,23 @@ public class BasicAuthenticationTest {
         ResponseEntity<String> res = client.exchange(greetingUrl(), HttpMethod.GET, entity, String.class);// get 방식으로 entity를 가지고 와서 String으로 data 가져 옴
 
         assertEquals("hello", res.getBody());
+    }
+
+    @DisplayName("3. 인증 성공 2")
+    @Test
+    void test_3(){
+        // TestRestTemplate은 바로 basicHeaderToken을 넣어서 request를 날려 줌
+        TestRestTemplate testClient = new TestRestTemplate("user1", "1111");
+        String res = testClient.getForObject(greetingUrl(), String.class);
+        assertEquals("hello", res);
+    }
+
+    @DisplayName("4. POST 인증")
+    @Test
+    void test_4(){
+        TestRestTemplate testClient = new TestRestTemplate("user1", "1111");
+        ResponseEntity<String> res  = testClient.postForEntity(greetingUrl(), "jeongyeon", String.class);
+        assertEquals("hello jeongyeon", res.getBody());
     }
 
 }
